@@ -14,6 +14,7 @@ from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -53,10 +54,10 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django_auto_logout.middleware.auto_logout',
-
+    'user.middlewares.AdminAutoLogoutMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'cinema.urls'
@@ -117,11 +118,7 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTH_USER_MODEL = 'user.UserModel'
 
 
-AUTO_LOGOUT = {
-    'IDLE_TIME': timedelta(minutes=1),
-    'REDIRECT_TO_LOGIN_IMMEDIATELY': True,
-    # 'MESSAGE': 'The session has expired. Please login again to continue.',
-}
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
@@ -157,12 +154,15 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
-        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
-    # 'AUTH_TOKEN_MODEL': 'api.ExpiringToken',
+}
+
+AUTO_LOGOUT = {
+    'IDLE_TIME': timedelta(minutes=1),
+    'REDIRECT_TO_LOGIN_IMMEDIATELY': True,
 }

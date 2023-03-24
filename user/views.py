@@ -66,6 +66,7 @@ class UserLoginView(View):
         form = SignInForm(request.POST)
         if form.is_valid():
             login(request, form.user)
+            # request.session['user_id'] = User.id
             token, _ = Token.objects.get_or_create(user=form.user)
             redirect_url = reverse_lazy("mycinema")
             return HttpResponseRedirect(redirect_url)
@@ -77,7 +78,8 @@ class UserLogoutView(View):
 
     def get(self, request):
         """ Describes the behaviour when call GET"""
-
+        # user_id = request.session.pop('user_id', None)
+        # if user_id:
         Token.objects.filter(user=request.user).delete()
         logout(request)
         redirect_url = reverse_lazy('mycinema')

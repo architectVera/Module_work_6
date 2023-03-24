@@ -6,3 +6,4 @@ from django.shortcuts import render
 def film_view(request: HttpRequest):
 
     return render(request, 'film_list.html')
+
