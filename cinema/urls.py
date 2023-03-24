@@ -21,6 +21,7 @@ from rest_framework.authtoken import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('user.urls')),
+    path('', include('kinohall.urls')),
     path('api/auth/', views.obtain_auth_token, name='api-auth'),
-
+    path('api/', include('api.routers', namespace='api')),
 ]

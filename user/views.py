@@ -13,6 +13,16 @@ from django.contrib import messages
 
 from user.forms import SignUpForm, SignInForm
 
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import get_user_model
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+from user.serializers import UserModelSerializer
+
+User = get_user_model()
+
 
 class UserRegisterView(View):
     """This class describes register view"""
@@ -32,6 +42,7 @@ class UserRegisterView(View):
             messages.success(request, 'Registration successful. Please log in.')
             redirect_url = reverse_lazy('user_login')
             return HttpResponseRedirect(redirect_url)
+        form = SignUpForm(request.POST)
         messages.error(request, 'Registration failed. Please check the form.')
         return render(request, 'user_register.html', {'form': form})
 
@@ -55,7 +66,8 @@ class UserLoginView(View):
         form = SignInForm(request.POST)
         if form.is_valid():
             login(request, form.user)
-            redirect_url = reverse_lazy("myshop")
+            token, _ = Token.objects.get_or_create(user=form.user)
+            redirect_url = reverse_lazy("mycinema")
             return HttpResponseRedirect(redirect_url)
         return render(request, 'user_login.html', {'form': form})
 
@@ -66,6 +78,7 @@ class UserLogoutView(View):
     def get(self, request):
         """ Describes the behaviour when call GET"""
 
+        Token.objects.filter(user=request.user).delete()
         logout(request)
-        redirect_url = reverse_lazy('myshop')
+        redirect_url = reverse_lazy('mycinema')
         return HttpResponseRedirect(redirect_url)

@@ -85,3 +85,5 @@ class SignUpForm(forms.Form):
 
         del self.cleaned_data["confirm_password"]
         User.objects.create_user(**self.cleaned_data)
+
+
