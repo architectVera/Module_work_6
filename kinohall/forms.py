@@ -38,3 +38,30 @@ class CreateMovieForm(forms.ModelForm):
             }),
         }
 
+
+class CreateHallForm(forms.ModelForm):
+    """
+    The class describes the mod for creating a new hall
+    """
+    class Meta:
+        """Describes the behavior of CreateHallForm model """
+
+        model = Hall
+        fields = [
+            "name",
+            "seats"
+        ]
+        widgets = {
+            "name": forms.TextInput(attrs={
+                "class": "form-control",
+                "id": "name",
+                "placeholder": "Name",
+            }),
+            "seats": forms.TextInput(attrs={
+                "class": "form-control",
+                "id": "seats",
+                "placeholder": "seats",
+
+            }),
+        }
+

@@ -1,19 +1,25 @@
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.urls import reverse
 
 
 class Hall(models.Model):
     name = models.CharField(max_length=100)
-    seats = models.PositiveIntegerField()
+    seats = models.PositiveIntegerField(validators=[MinValueValidator(20), MaxValueValidator(250)])
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        """ This method return absolute url"""
+
+        return reverse('hall-detail', kwargs={'pk': self.pk})
 
 
 class Movie(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True)
-    year = models.PositiveIntegerField(max_length=4)
+    year = models.PositiveIntegerField(validators=[MaxValueValidator(2030)])
     image = models.ImageField(upload_to='products/%Y/%m/%d', blank=True)
 
     def __str__(self):

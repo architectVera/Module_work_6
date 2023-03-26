@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Movie List{% endblock %}
+{% block title %}Hall List{% endblock %}
 {% block content %}
     <!--main content   -->
     <main class="container">
@@ -12,24 +12,21 @@
         {% endif %}
         <div class="row">
             <section class="col-md-9 mb-2" role="main">
-                <h1 class="h1">Our movies</h1>
+                <h1 class="h1">Our halls</h1>
                 <div class="row row-cols-1 row-cols-md-3 g-4 position-relative">
                     <!--movies-->
                     {% for object in object_list %}
                         <article class="col">
                             <div class="card shadow">
-                                <img src="https://loremflickr.com/320/240?random=1"
-                                     alt="Blog post image"
-                                     class="card-img-top">
+
                                 <div class="card-body">
                                     <strong class="fw-light">Description:</strong>
-                                    <h2 class="card-title">{{ object.title|truncatewords:8 }}</h2>
                                     <small>
                                         <i class="bi bi-person mx-1"></i><a href="" class="fw-bolder link-secondary">{{ object.author|capfirst }}</a>
-                                        <i class="bi bi-calendar mx-1"></i><span>Film release year{{ object.year }}</span>
+                                        <i class="bi bi-calendar mx-1"></i><span>Number of seats: {{ object.seats }}</span>
                                     </small>
-                                    <p class="card-text">{{ object.description|truncatewords:40 }}</p>
-                                    <a href="{% url 'movie-detail' object.id %}"
+                                    <h3 class="card-text">{{ object.name}}</h3>
+                                    <a href="{% url 'hall-detail' object.id %}"
                                        class="card-link text-body fw-bold">More information...</a>
                                 </div>
                             </div>

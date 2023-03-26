@@ -6,6 +6,9 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from django.contrib.auth import get_user_model, authenticate
 
+from api.permissions import UserPermission
+from kinohall.models import Movie, Hall
+from kinohall.serializers import MovieSerializer, HallSerializer
 from user.models import UserModel
 from user.serializers import UserModelSerializer
 
@@ -63,4 +66,26 @@ class LogoutView(APIView):
 
 
 """MOVIE"""
+
+
+class MovieViewSet(ModelViewSet):
+    queryset = Movie.objects.all()
+    serializer_class = MovieSerializer
+    lookup_field = 'pk'
+    lookup_url_kwarg = 'pk'
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+
+class HallViewSet(ModelViewSet):
+    queryset = Hall.objects.all()
+    serializer_class = HallSerializer
+    lookup_field = 'pk'
+    lookup_url_kwarg = 'pk'
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def create(self, request, *args, **kwargs):
+        name = request.data.get('name')
+        if Hall.objects.filter(name=name).exists():
+            return Response({'detail': 'This name already exists.'}, status=status.HTTP_400_BAD_REQUEST)
+        return super().create(request, *args, **kwargs)
 

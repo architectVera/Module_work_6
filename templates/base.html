@@ -43,13 +43,16 @@
                                     <a href="" class="dropdown-item">Create a Session</a>
                                 </li>
                                 <li>
-                                    <a href="" class="dropdown-item">Create a Cinema</a>
+                                    <a href="{% url 'create-hall' %}" class="dropdown-item">Create a Hall</a>
                                 </li>
                                 <li>
                                     <a href="{% url 'create-movie' %}" class="dropdown-item">Create a Movie</a>
                                 </li>
                                 <li>
                                     <a href="{% url 'movie-list' %}" class="dropdown-item">Movie List</a>
+                                </li>
+                                   <li>
+                                    <a href="{% url 'hall-list' %}" class="dropdown-item">Hall List</a>
                                 </li>
                                 <li>
                                     <hr class="dropdown-divider">

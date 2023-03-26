@@ -8,8 +8,8 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView, ListView
 
-from kinohall.forms import CreateMovieForm
-from kinohall.models import Movie
+from kinohall.forms import CreateMovieForm, CreateHallForm
+from kinohall.models import Movie, Hall
 
 
 def film_view(request: HttpRequest):
@@ -25,14 +25,9 @@ class MovieListView(ListView):
     template_name = 'movie_list.html'
     allow_empty = False
 
-    # def get_queryset(self):
-    #     """ This method return queryset where attribute available = True """
-    #
-    #     return Product.objects.filter(available=True)
-
 
 class MovieDetailView(DetailView):
-    """ This view describes details of product """
+    """ This view describes details of movie """
 
     model = Movie
     template_name = 'movie_detail.html'
@@ -47,7 +42,7 @@ class MovieDetailView(DetailView):
 
 
 class CreateMovieView(UserPassesTestMixin, CreateView):
-    """ This view describes create of product """
+    """ This view describes create of movie """
 
     model = Movie
     form_class = CreateMovieForm
@@ -100,7 +95,7 @@ class UpdateMovieView(UserPassesTestMixin, UpdateView):
 class DeleteMovieView(UserPassesTestMixin, DeleteView):
 
     model = Movie
-    success_url = reverse_lazy('mycinema')
+    success_url = reverse_lazy('movie-list')
     pk_url_kwarg = 'pk'
     template_name = 'movie_confirm_delete.html'
 
@@ -113,6 +108,111 @@ class DeleteMovieView(UserPassesTestMixin, DeleteView):
         """ Method uses action if object delete"""
 
         messages.success(self.request, 'Movie deleted successfully')
+        return super().delete(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+"""Hall"""
+
+
+class HallListView(ListView):
+    """ This view describes product list """
+
+    model = Hall
+    template_name = 'hall_list.html'
+    allow_empty = False
+
+
+class HallDetailView(DetailView):
+    """ This view describes details of hall """
+
+    model = Hall
+    template_name = 'hall_detail.html'
+    context_object_name = 'object'
+    pk_url_kwarg = 'pk'
+
+    def get_context_data(self, object_list=None, **kwargs):
+        """ This method returns a filtered queryset by user """
+
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+class CreateHallView(UserPassesTestMixin, CreateView):
+    """ This view describes create of hall """
+
+    model = Hall
+    form_class = CreateHallForm
+    template_name = 'hall_create.html'
+
+    def test_func(self):
+        """This method checking if user is_staff"""
+
+        return self.request.user.is_staff
+
+    def form_valid(self, form):
+        """Validation"""
+
+        name = form.cleaned_data['name']
+        if Hall.objects.filter(name=name).exists():
+            messages.error(self.request, 'This name already exists')
+            return self.form_invalid(form)
+
+        messages.success(self.request, 'Hall created successfully')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        """ Method uses action if validation fails"""
+
+        messages.error(self.request, 'Failed to create a movie. Please check the form.')
+        return super().form_invalid(form)
+
+
+class UpdateHallView(UserPassesTestMixin, UpdateView):
+    """ This view describes update of the hall """
+
+    model = Hall
+    form_class = CreateHallForm
+    template_name = 'hall_create.html'
+    pk_url_kwarg = 'pk'
+
+    def test_func(self):
+        """This method checking if user is_staff"""
+
+        return self.request.user.is_staff
+
+    def form_valid(self, form):
+        """Validation"""
+
+        messages.success(self.request, 'The Hall update successfully')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        """ Method uses action if validation fails"""
+
+        messages.error(self.request, 'Failed to update the hall. Please check the form.')
+        return super().form_invalid(form)
+
+
+class DeleteHallView(UserPassesTestMixin, DeleteView):
+
+    model = Hall
+    success_url = reverse_lazy('hall-list')
+    pk_url_kwarg = 'pk'
+    template_name = 'hall_confirm_delete.html'
+
+    def test_func(self):
+        """This method checking if user is_staff"""
+
+        return self.request.user.is_staff
+
+    def delete(self, request, *args, **kwargs):
+        """ Method uses action if object delete"""
+
+        messages.success(self.request, 'Hall deleted successfully')
         return super().delete(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
