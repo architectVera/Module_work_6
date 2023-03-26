@@ -15,6 +15,8 @@ from rest_framework.response import Response
 
 User = get_user_model()
 
+"""AUTHENTICATION"""
+
 
 class UsersViewSet(ModelViewSet):
     queryset = UserModel.objects.all()
@@ -58,3 +60,7 @@ class LogoutView(APIView):
         token = request.auth
         token.delete()
         return Response({'message': 'Successfully logged out'})
+
+
+"""MOVIE"""
+

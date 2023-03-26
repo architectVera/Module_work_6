@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Article details{% endblock %}
+
+
+{% block content %}
+<!--  <div class="nav-scroller py-1 mb-3">-->
+<!--    <nav class="nav d-flex justify-content-between">-->
+<!--      {% for genre in name_genre %}-->
+<!--        <div class="nav-item"><a href="" class="nav-link link-secondary">{{ genre.genre }}</a></div>-->
+<!--      {% endfor %}-->
+
+<!--    </nav>-->
+<!--  </div>-->
+
+<!--Movie-->
+    <div class="container">
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+<section class="col-md-9 mb-2" role="main">
+      <h1 class="h1">{{ object.title }}</h1>
+      <div class="row position-relative">
+        <article class="col w-100">
+          <div class="mb-3">
+            <strong class="fw-light">Year: {{ object.year}}</strong>
+<!--            <small>-->
+<!--              <i class="bi bi-person mx-1"></i><a href="" class="fw-bolder link-secondary">{{ user }}</a>-->
+<!--            </small>-->
+          </div>
+          <p>
+            {{ object.description|linebreaks}}
+          </p>
+        </article>
+      </div>
+  <div>
+    <a href="{% url 'movie-update' object.id %}" class="w-100 btn btn-primary" role="button">Update</a>
+  </div>
+  <p></p>
+  <div>
+    <a href="{% url 'movie-delete' object.id %}" class="w-100 btn btn-primary" role="button">Delete</a>
+
+  </div>
+    </section>
+    </div>>
+{% endblock %}
