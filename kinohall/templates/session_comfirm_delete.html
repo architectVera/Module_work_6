@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+<h1>Delete Session</h1>
+<p>Are you sure you want to  Session id: "{{ object.id }}"?</p>
+<form method="post">
+    {% csrf_token %}
+    <input type="submit" class="btn btn-danger" value="Delete">
+    <a href="{{ object.get_absolute_url }}" class="btn btn-secondary">Cancel</a>
+</form>
+</div>>
+{% endblock %}

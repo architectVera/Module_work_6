@@ -31,11 +31,11 @@
         </article>
       </div>
   <div>
-    <a href="" class="w-100 btn btn-primary" role="button">Update</a>
+    <a href="{% url 'session-update' object.id %}" class="w-100 btn btn-primary" role="button">Update</a>
   </div>
   <p></p>
   <div>
-    <a href="" class="w-100 btn btn-primary" role="button">Delete</a>
+    <a href="{% url 'session-delete' object.id %}" class="w-100 btn btn-primary" role="button">Delete</a>
 
   </div>
     </section>

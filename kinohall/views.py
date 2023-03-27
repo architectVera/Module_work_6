@@ -121,7 +121,7 @@ class DeleteMovieView(UserPassesTestMixin, DeleteView):
 
 
 class HallListView(ListView):
-    """ This view describes product list """
+    """ This view describes hall list """
 
     model = Hall
     template_name = 'hall_list.html'
@@ -226,6 +226,29 @@ class DeleteHallView(UserPassesTestMixin, DeleteView):
 """SESSION VIEW"""
 
 
+class SessionListView(ListView):
+    """ This view describes product list """
+
+    model = Session
+    template_name = 'session_list.html'
+    allow_empty = False
+
+
+class SessionDetailView(DetailView):
+    """ This view describes details of movie """
+
+    model = Session
+    template_name = 'session_detail.html'
+    context_object_name = 'object'
+    pk_url_kwarg = 'pk'
+
+    def get_context_data(self, object_list=None, **kwargs):
+        """ This method returns a filtered queryset by user """
+
+        context = super().get_context_data(**kwargs)
+        return context
+
+
 class CreateSessionView(UserPassesTestMixin, CreateView):
     """ This view describes create of session """
 
@@ -245,20 +268,53 @@ class CreateSessionView(UserPassesTestMixin, CreateView):
         return super().form_valid(form)
 
 
-class SessionDetailView(DetailView):
-    """ This view describes details of movie """
+class UpdateSessionView(UserPassesTestMixin, UpdateView):
+    """ This view describes update of the session """
 
     model = Session
-    template_name = 'session_detail.html'
-    context_object_name = 'object'
+    form_class = CreateSessionForm
+    template_name = 'session_create.html'
     pk_url_kwarg = 'pk'
 
-    def get_context_data(self, object_list=None, **kwargs):
-        """ This method returns a filtered queryset by user """
+    def test_func(self):
+        """This method checking if user is_staff"""
 
+        return self.request.user.is_staff
+
+    def form_valid(self, form):
+        """Validation"""
+
+        messages.success(self.request, 'The Session update successfully')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        """ Method uses action if validation fails"""
+
+        messages.error(self.request, 'Failed to update the session. Please check the form.')
+        return super().form_invalid(form)
+
+
+class DeleteSessionView(UserPassesTestMixin, DeleteView):
+
+    model = Session
+    success_url = reverse_lazy('session-list')
+    pk_url_kwarg = 'pk'
+    template_name = 'session_confirm_delete.html'
+
+    def test_func(self):
+        """This method checking if user is_staff"""
+
+        return self.request.user.is_staff
+
+    def delete(self, request, *args, **kwargs):
+        """ Method uses action if object delete"""
+
+        messages.success(self.request, 'Session deleted successfully')
+        return super().delete(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
-
 
 
 
