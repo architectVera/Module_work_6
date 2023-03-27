@@ -8,8 +8,8 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView, ListView
 
-from kinohall.forms import CreateMovieForm, CreateHallForm
-from kinohall.models import Movie, Hall
+from kinohall.forms import CreateMovieForm, CreateHallForm, CreateSessionForm
+from kinohall.models import Movie, Hall, Session
 
 
 def film_view(request: HttpRequest):
@@ -17,7 +17,9 @@ def film_view(request: HttpRequest):
     return render(request, 'film_list.html')
 
 
-# All about Movie
+"""MOVIE"""
+
+
 class MovieListView(ListView):
     """ This view describes product list """
 
@@ -115,7 +117,7 @@ class DeleteMovieView(UserPassesTestMixin, DeleteView):
         return context
 
 
-"""Hall"""
+"""HALL"""
 
 
 class HallListView(ListView):
@@ -218,5 +220,45 @@ class DeleteHallView(UserPassesTestMixin, DeleteView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
+
+
+"""SESSION"""
+"""SESSION VIEW"""
+
+
+class CreateSessionView(UserPassesTestMixin, CreateView):
+    """ This view describes create of session """
+
+    model = Session
+    form_class = CreateSessionForm
+    template_name = 'session_create.html'
+
+    def test_func(self):
+        """This method checking if user is_staff"""
+
+        return self.request.user.is_staff
+
+    def form_valid(self, form):
+        """Validation"""
+
+        messages.success(self.request, 'Hall created successfully')
+        return super().form_valid(form)
+
+
+class SessionDetailView(DetailView):
+    """ This view describes details of movie """
+
+    model = Session
+    template_name = 'session_detail.html'
+    context_object_name = 'object'
+    pk_url_kwarg = 'pk'
+
+    def get_context_data(self, object_list=None, **kwargs):
+        """ This method returns a filtered queryset by user """
+
+        context = super().get_context_data(**kwargs)
+        return context
+
+
 
 

@@ -41,3 +41,9 @@ class Session(models.Model):
 
     def __str__(self):
         return f"{self.movie} ({self.hall}): {self.date} {self.start_time}"
+
+    def get_absolute_url(self):
+        """ This method return absolute url"""
+
+        return reverse('session-detail', kwargs={'pk': self.pk})
+

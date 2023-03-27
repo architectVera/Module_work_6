@@ -1,4 +1,5 @@
 {% load static %}
+{% load widget_tweaks %}
 
 <!doctype html>
 <html lang="en">
@@ -40,7 +41,7 @@
                             </div>
                             <ul class="dropdown-menu" role="menu">
                                 <li>
-                                    <a href="" class="dropdown-item">Create a Session</a>
+                                    <a href="{% url 'create-session' %}" class="dropdown-item">Create a Session</a>
                                 </li>
                                 <li>
                                     <a href="{% url 'create-hall' %}" class="dropdown-item">Create a Hall</a>
@@ -51,8 +52,11 @@
                                 <li>
                                     <a href="{% url 'movie-list' %}" class="dropdown-item">Movie List</a>
                                 </li>
-                                   <li>
+                                <li>
                                     <a href="{% url 'hall-list' %}" class="dropdown-item">Hall List</a>
+                                </li>
+                                <li>
+                                    <a href="" class="dropdown-item">Session List</a>
                                 </li>
                                 <li>
                                     <hr class="dropdown-divider">

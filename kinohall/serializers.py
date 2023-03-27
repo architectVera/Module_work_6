@@ -1,5 +1,6 @@
+
 from rest_framework import serializers
-from kinohall.models import Movie, Hall
+from kinohall.models import Movie, Hall, Session
 from user.models import UserModel
 
 
@@ -14,11 +15,12 @@ class HallSerializer(serializers.ModelSerializer):
         model = Hall
         fields = ['id', 'name', 'seats']
 
-#
-# class ArticleSerializer(serializers.ModelSerializer):
-#     genre = serializers.PrimaryKeyRelatedField(queryset=Genre.objects.all())
-#     author = serializers.PrimaryKeyRelatedField(queryset=UserModel.objects.all())
-#
-#     class Meta:
-#         model = Article
-#         fields = ['slug', 'title', 'description', 'genre', 'author']
+
+class SessionSerializer(serializers.ModelSerializer):
+    movie = serializers.PrimaryKeyRelatedField(queryset=Movie.objects.all())
+    hall = serializers.PrimaryKeyRelatedField(queryset=Hall.objects.all())
+
+    class Meta:
+        model = Session
+        fields = ['id', 'start_time', 'end_time', 'date', 'price', 'hall', 'movie']
+

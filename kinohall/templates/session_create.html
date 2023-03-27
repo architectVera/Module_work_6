@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Create session{% endblock %}
+{% block content %}
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <main class="form-auth form-signin w-100 m-auto">
+        {{ form.errors }}
+        <form method="POST" action="">
+            {% csrf_token %}
+            <h1 class="h3 mb-3 fw-normal">Create session</h1>
+            <p></p>
+             <label>{{ form.hall.label }}</label>
+            <div>{{ form.hall }}</div>
+            <p></p>
+            <label>{{ form.movie.label }}</label>
+            <div>{{ form.movie }}</div>
+            <p></p>
+            <label>{{ form.date.label }}</label>
+            <div>{{ form.date }}</div>
+            <p></p>
+            <label>{{ form.start_time.label }}</label>
+            <div>{{ form.start_time}}</div>
+
+            <p></p>
+            <label>{{ form.end_time.label }}</label>
+            <div>{{ form.end_time }}</div>
+            <p></p>
+            <label>{{ form.price.label }}</label>
+            <div type="number"
+                                   min="1"
+                                   value="1"
+                                   required
+                                   min="0" >{{ form.price}}</div>
+            <p></p>
+            <div class="my-3">
+                <a href="" class="text-body fw-bold">See all halls</a>
+            </div>
+            <button class="w-100 btn btn-lg btn-primary" type="submit">Create</button>
+        </form>
+    </main>
+{% endblock %}

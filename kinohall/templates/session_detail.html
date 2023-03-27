@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Session details{% endblock %}
+
+
+{% block content %}
+
+<!--Session-->
+    <div class="container">
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+<section class="col-md-9 mb-2" role="main">
+      <strong class="fw-light">Film name:</strong>
+      <h1 class="h1">{{ object.movie.title }}</h1>
+      <div class="row position-relative">
+        <article class="col w-100">
+          <div class="mb-3">
+              <strong class="fw-light">Hall name:  <b>{{ object.hall.name}}</b></strong>
+          </div>
+          <p>Data: {{ object.date }}</p>
+
+          <p>Movie start time: {{ object.start_time }}</p>
+          <p>Movie end time: {{ object.end_time }}</p>
+          <p>Ticket price: <b> {{ object.price }} UA</b></p>
+            <p>Seats: {{object.hall.seats }}  pcs</p>
+        </article>
+      </div>
+  <div>
+    <a href="" class="w-100 btn btn-primary" role="button">Update</a>
+  </div>
+  <p></p>
+  <div>
+    <a href="" class="w-100 btn btn-primary" role="button">Delete</a>
+
+  </div>
+    </section>
+    </div>>
+{% endblock %}
