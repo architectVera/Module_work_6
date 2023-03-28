@@ -1,15 +1,25 @@
 {% extends "base.html" %}
 {% block title %}Create session{% endblock %}
 {% block content %}
+<div class="container">
     {% if messages %}
         <ul class="messages">
             {% for message in messages %}
-                <li>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                <li style="color: red">{% if message.tags %} {% endif %} {{ message }}</li>
             {% endfor %}
         </ul>
     {% endif %}
+</div>
     <main class="form-auth form-signin w-100 m-auto">
-        {{ form.errors }}
+{% if form.errors %}
+    <div class="alert alert-danger">
+        {% for field, errors in form.errors.items %}
+            {% for error in errors %}
+                <br>{{ error }}<br>
+            {% endfor %}
+        {% endfor %}
+    </div>
+{% endif %}
         <form method="POST" action="">
             {% csrf_token %}
             <h1 class="h3 mb-3 fw-normal">Create session</h1>
@@ -20,8 +30,11 @@
             <label>{{ form.movie.label }}</label>
             <div>{{ form.movie }}</div>
             <p></p>
-            <label>{{ form.date.label }}</label>
-            <div>{{ form.date }}</div>
+            <label>{{ form.start_date.label }}</label>
+            <div>{{ form.start_date }}</div>
+            <p></p>
+            <label>{{ form.end_date.label }}</label>
+            <div>{{ form.end_date }}</div>
             <p></p>
             <label>{{ form.start_time.label }}</label>
             <div>{{ form.start_time}}</div>

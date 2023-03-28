@@ -165,6 +165,6 @@ REST_FRAMEWORK = {
 }
 
 AUTO_LOGOUT = {
-    'IDLE_TIME': timedelta(minutes=1),
+    'IDLE_TIME': timedelta(minutes=30),
     'REDIRECT_TO_LOGIN_IMMEDIATELY': True,
 }

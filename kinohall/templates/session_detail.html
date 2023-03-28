@@ -10,7 +10,7 @@
         {% if messages %}
             <ul class="messages">
                 {% for message in messages %}
-                    <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    <li>{{ message }}</li>
                 {% endfor %}
             </ul>
         {% endif %}
@@ -22,7 +22,7 @@
           <div class="mb-3">
               <strong class="fw-light">Hall name:  <b>{{ object.hall.name}}</b></strong>
           </div>
-          <p>Data: {{ object.date }}</p>
+          <p>Show date from{{ object.start_date }} till {{ object.end_date }}</p>
 
           <p>Movie start time: {{ object.start_time }}</p>
           <p>Movie end time: {{ object.end_time }}</p>

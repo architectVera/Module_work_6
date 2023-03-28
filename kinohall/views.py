@@ -25,7 +25,7 @@ class MovieListView(ListView):
 
     model = Movie
     template_name = 'movie_list.html'
-    allow_empty = False
+    allow_empty = True
 
 
 class MovieDetailView(DetailView):
@@ -125,7 +125,7 @@ class HallListView(ListView):
 
     model = Hall
     template_name = 'hall_list.html'
-    allow_empty = False
+    allow_empty = True
 
 
 class HallDetailView(DetailView):
@@ -169,7 +169,7 @@ class CreateHallView(UserPassesTestMixin, CreateView):
     def form_invalid(self, form):
         """ Method uses action if validation fails"""
 
-        messages.error(self.request, 'Failed to create a movie. Please check the form.')
+        messages.error(self.request, 'Failed to create a hall. Please check the form.')
         return super().form_invalid(form)
 
 
@@ -231,7 +231,8 @@ class SessionListView(ListView):
 
     model = Session
     template_name = 'session_list.html'
-    allow_empty = False
+    allow_empty = True
+
 
 
 class SessionDetailView(DetailView):
@@ -264,7 +265,7 @@ class CreateSessionView(UserPassesTestMixin, CreateView):
     def form_valid(self, form):
         """Validation"""
 
-        messages.success(self.request, 'Hall created successfully')
+        messages.success(self.request, 'Session created successfully')
         return super().form_valid(form)
 
 

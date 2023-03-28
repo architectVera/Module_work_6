@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Create hall{% endblock %}
 {% block content %}
+    <div class="container">
     {% if messages %}
         <ul class="messages">
             {% for message in messages %}
@@ -8,9 +9,17 @@
             {% endfor %}
         </ul>
     {% endif %}
+    </div>
     <main class="form-auth form-signin w-100 m-auto">
-        {{ form.errors }}
-        <form method="POST" action="">
+{% if form.errors %}
+    <div class="alert alert-danger">
+        {% for field, errors in form.errors.items %}
+            {% for error in errors %}
+                <strong>{{ field|title }}:</strong> {{ error }}<br>
+            {% endfor %}
+        {% endfor %}
+    </div>
+{% endif %}        <form method="POST" action="">
             {% csrf_token %}
             <h1 class="h3 mb-3 fw-normal">Create hall</h1>
             <div class="form-floating">
