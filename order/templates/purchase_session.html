@@ -6,6 +6,7 @@
 {% block content %}
 
 <!--Session-->
+
     <div class="container">
         {% if messages %}
             <ul class="messages">
@@ -14,56 +15,66 @@
                 {% endfor %}
             </ul>
         {% endif %}
+
+        {% if form.errors %}
+    <div class="alert alert-danger">
+        {% for field, errors in form.errors.items %}
+            {% for error in errors %}
+                <br>{{ error }}<br>
+            {% endfor %}
+        {% endfor %}
+    </div>
+{% endif %}
+
 <section class="col-md-9 mb-2" role="main">
           <strong class="fw-light">Film name:</strong>
-          <h1 class="h1">{{ object.movie.title }}</h1>
+          <h1 class="h1">{{ session.movie.title }}</h1>
       <div class="row position-relative">
         <article class="col w-100">
           <div class="mb-3">
-              <strong class="fw-light">Hall name:  <b>{{ object.hall.name}}</b></strong>
+              <strong class="fw-light">Hall name:  <b>{{ session.hall.name}}</b></strong>
                                         <small>
                             <i class="bi bi-person mx-1"></i><a href="" class="fw-bolder link-secondary"></a>
-                            <i class="bi bi-calendar mx-1"></i><span>Show date from {{ object.start_date }} till {{ object.end_date }}</span>
+                            <i class="bi bi-calendar mx-1"></i><span>Show date from {{ session.start_date }} till {{ session.end_date }}</span>
                         </small>
           </div>
-            <p>{{ object.movie.description|linebreaks }}</p>
-          <p class="card-text">Movie start time: {{ object.start_time }}</p>
-          <p class="card-text">Movie end time: {{ object.end_time }}</p>
-          <p class="card-text">Ticket price: <b> {{ object.price }} UA</b></p>
+            <p>{{ session.movie.description|linebreaks }}</p>
+          <p class="card-text">Movie start time: {{ session.start_time }}</p>
+          <p class="card-text">Movie end time: {{ session.end_time }}</p>
+          <p class="card-text">Ticket price: <b> {{ session.price }} UA</b></p>
 
     {% if user.is_superuser %}
     <div>
-        <a href="{% url 'session-update' object.id %}" class="w-100 btn btn-primary" role="button">Update</a>
+        <a href="{% url 'session-update' pk=session.pk %}" class="w-100 btn btn-primary" role="button">Update</a>
     </div>
     <p></p>
     <div>
-     <a href="{% url 'session-delete' object.id %}" class="w-100 btn btn-primary" role="button">Delete</a>
+     <a href="{% url 'session-delete' pk=session.pk  %}" class="w-100 btn btn-primary" role="button">Delete</a>
     </div>
     {% elif user.is_authenticated %}
-        <p class="card-text">
-            Price: <b>{{ object.price }} UA</b>
-        </p>
+
         <form method="POST" action="">
              {% csrf_token %}
-                       <label for="date">Chose the date:</label>
-                            <input type="number"
-                                   name="quantity"
-                                   min="1"
-                                   max="{{ product.quantity }}"
-                                   value="1"
+                       <label for="showdata">Chose the date:</label>
+                            <input type="date"
+                                   id="showdata"
+                                   name="showdata"
+                                   min="{{ session.start_date }}"
+                                   max="{{ session.end_date }}"
+                                   value="{{ session|date:'Y-m-d' }}"
                                    required>
                             <p></p>
            <label for="quantity">Quantity:</label>
                             <input type="number"
                                    name="quantity"
                                    min="1"
-                                   max="{{ product.quantity }}"
+                                   max="{{ session.hall.seats }}"
                                    value="1"
                                    required>
                             <p></p>
                             <button class="w-100 btn btn-lg btn-primary" type="submit">Buy tickets</button>
         </form>
-    <p class="card-text">Available quantity: </p>
+    <p class="card-text">Available quantity: {{ remaining_capacity }} </p>
       {% else %}
             <p>
                 <b>Please register or login to start shopping</b>

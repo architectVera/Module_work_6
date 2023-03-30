@@ -109,7 +109,7 @@ class CreateSessionForm(forms.ModelForm):
                 attrs={'class': 'form-control',
                        'type': 'number',
                        'min': '0',
-                       'max': '350'
+                       'max': '400'
                        }),
             'hall': forms.Select(attrs={'class': 'form-control'}),
             'movie': forms.Select(attrs={'class': 'form-control'}),

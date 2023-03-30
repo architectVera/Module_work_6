@@ -1,13 +1,14 @@
 """ URLS for the kinohall app  """
 
 from django.urls import path
-from kinohall.views import film_view, CreateMovieView, MovieDetailView, UpdateMovieView, DeleteMovieView, \
+from kinohall.views import CreateMovieView, MovieDetailView, UpdateMovieView, DeleteMovieView, \
     MovieListView, CreateHallView, HallDetailView, UpdateHallView, \
     DeleteHallView, HallListView, CreateSessionView, SessionDetailView, UpdateSessionView, DeleteSessionView, \
-    SessionListView
+    SessionListView, SessionTodayListView, SessionTomorrowListView
 
 urlpatterns = [
-    path('', film_view, name='mycinema'),
+    path('today/', SessionTodayListView.as_view(), name='mycinema'),
+    path('tomorrow/', SessionTomorrowListView.as_view(), name='tomorrow-session'),
 
     path('movie/', MovieListView.as_view(), name='movie-list'),
     path('movie/create/', CreateMovieView.as_view(), name='create-movie'),

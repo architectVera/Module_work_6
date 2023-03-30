@@ -22,6 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('user.urls')),
     path('', include('kinohall.urls')),
+    path('', include('order.urls')),
     path('api/auth/', views.obtain_auth_token, name='api-auth'),
     path('api/', include('api.routers', namespace='api')),
 ]

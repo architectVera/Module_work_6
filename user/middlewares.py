@@ -21,7 +21,7 @@ class AdminAutoLogoutMiddleware:
             if last_activity is not None:
                 last_activity = timezone.datetime.fromisoformat(last_activity)
                 idle_time = timezone.now() - last_activity
-                if idle_time > timezone.timedelta(minutes=1):
+                if idle_time > timezone.timedelta(minutes=30):
                     try:
                         token = Token.objects.get(user=user)
                         token.delete()

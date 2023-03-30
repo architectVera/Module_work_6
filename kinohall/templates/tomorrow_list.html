@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Session List{% endblock %}
+{% block title %}Movie List{% endblock %}
 {% block content %}
     <!--main content   -->
     <main class="container">
@@ -12,7 +12,7 @@
         {% endif %}
         <div class="row">
             <section class="col-md-9 mb-2" role="main">
-                <h1 class="h1">ALL sessions</h1>
+                <h1 class="h1">Tomorrow's sessions</h1>
                 <div class="row row-cols-1 row-cols-md-3 g-4 position-relative">
                     <!--sessions-->
                     {% for object in object_list %}
@@ -25,19 +25,17 @@
                                     <strong class="fw-light">Session:</strong>
                                     <h2 class="card-title">{{ object.movie|truncatewords:8 }}</h2>
                                     <small>
-                                        <i class="bi bi-calendar mx-1"></i><span>Film release year {{ object.movie.year }}</span>
+                                        <i class="bi bi-calendar mx-1"></i><span>Film release year {{ object.year }}</span>
                                     </small>
-                                    <p></p>
                                     <p class="card-text">{{ object.movie.description|truncatewords:40 }}</p>
 
-                                    <p>Show date from </p>
-                                        <p><b>{{ object.start_date }} till {{ object.end_date }}</b></p>
+                                    <p>Show date from{{ object.start_date }} till {{ object.end_date }}</p>
 
                                     <p>Movie start time: {{ object.start_time }}</p>
                                     <p>Movie end time: {{ object.end_time }}</p>
                                     <p>Ticket price: <b> {{ object.price }} UA</b></p>
                                     <p>Seats: {{object.hall.seats }}  pcs</p>
-                                    <a href="{% url 'purchase-session' object.id %}"
+                                    <a href="{% url 'purchase-session' pk=object.id %}"
                                        class="card-link text-body fw-bold">More information...</a>
                                 </div>
                             </div>
