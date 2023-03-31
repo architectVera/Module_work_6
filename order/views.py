@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.db import models
 from django.views.generic import DetailView, ListView
 
-from .models import Session, Purchase
+from .models import Session, Purchase, SoldTicketsByDay, FreeSeatsByDay
 
 
 def purchase_session(request, pk):
@@ -24,8 +24,6 @@ def purchase_session(request, pk):
         tickets_sold = Purchase.objects.filter(showdata=showdata, session=session).aggregate(Sum('quantity'))[
                            'quantity__sum'] or 0
         remaining_capacity = hall_capacity - tickets_sold
-        print(f'ticket sold: {tickets_sold}')
-        print(f'remaining_capacity: {remaining_capacity}')
 
         if showdata < timezone.now().date():
             messages.error(request, 'Show date cannot be less than today.')
@@ -59,7 +57,10 @@ def purchase_session(request, pk):
                           {'session': session, 'remaining_capacity': remaining_capacity},
                           {'error_message': error_message})
     else:
-        return render(request, 'purchase_session.html', {'session': session, 'remaining_capacity': remaining_capacity})
+        # sold_tickets_by_day = SoldTicketsByDay(session).get_sold_tickets_by_day()
+        free_seats_by_day = FreeSeatsByDay(session).get_free_seats_by_day()
+        return render(request, 'purchase_session.html', {'session': session, 'remaining_capacity': remaining_capacity,
+                                                         'free_seats_by_day': free_seats_by_day.items()})
 
 
 class PurchaseSessionDetailView(DetailView):

@@ -2,6 +2,8 @@
 
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models import Sum
+from collections import defaultdict
 
 from django.urls import reverse
 
@@ -36,4 +38,34 @@ class Purchase(models.Model):
         """ This method return absolute url"""
 
         return reverse('purchase_detail', kwargs={'purchase_id': self.id, 'user_id': self.user.id})
+
+
+class SoldTicketsByDay:
+    def __init__(self, session):
+        self.session = session
+
+    def get_sold_tickets_by_day(self):
+        sold_tickets_by_day = defaultdict(int)
+
+        purchases = Purchase.objects.filter(session=self.session)
+
+        for purchase in purchases:
+            sold_tickets_by_day[purchase.showdata] += purchase.quantity
+
+        return dict(sold_tickets_by_day)
+
+class FreeSeatsByDay:
+    def __init__(self, session):
+        self.session = session
+
+    def get_free_seats_by_day(self):
+        free_seats_by_day = defaultdict(int)
+
+        purchases = Purchase.objects.filter(session=self.session)
+        total_seats = self.session.hall.seats
+
+        for purchase in purchases:
+            free_seats_by_day[purchase.showdata] += total_seats - purchase.quantity
+
+        return dict(free_seats_by_day)
 

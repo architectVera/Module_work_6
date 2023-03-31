@@ -74,7 +74,13 @@
                             <p></p>
                             <button class="w-100 btn btn-lg btn-primary" type="submit">Buy tickets</button>
         </form>
-    <p class="card-text">Available quantity: {{ remaining_capacity }} </p>
+            <p></p>
+             <p class="card-text">The total number of seats in the hall : {{ session.hall.seats }} tickets </p>
+{% for date, free_seats in free_seats_by_day %}
+    <p>{{ date }} - {{ free_seats }} tickets available</p>
+{% endfor %}
+      <p>For other dates, the entire number of tickets is available<p>
+
       {% else %}
             <p>
                 <b>Please register or login to start shopping</b>

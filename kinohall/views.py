@@ -13,9 +13,6 @@ from kinohall.forms import CreateMovieForm, CreateHallForm, CreateSessionForm
 from kinohall.models import Movie, Hall, Session
 
 
-# def film_view(request: HttpRequest):
-#
-#     return render(request, 'today_list.html')
 from order.models import Purchase
 
 """MOVIE"""
@@ -255,6 +252,19 @@ class SessionListView(ListView):
     allow_empty = True
     paginate_by = None
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        sort = self.request.GET.get('sort')
+        if sort == 'price':
+            queryset = queryset.order_by('price')
+        elif sort == '-price':
+            queryset = queryset.order_by('-price')
+        elif sort == 'time':
+            queryset = queryset.order_by('start_time')
+        else:
+            queryset = queryset.order_by('start_time', 'price')
+        return queryset
+
 
 class SessionDetailView(DetailView):
     """ This view describes details of movie """
@@ -362,7 +372,17 @@ class SessionTodayListView(ListView):
     def get_queryset(self):
         today = timezone.now().date()
         queryset = super().get_queryset()
-        return queryset.filter(start_date__lte=today, end_date__gte=today)
+        queryset = queryset.filter(start_date__lte=today, end_date__gte=today)
+        sort = self.request.GET.get('sort')
+        if sort == 'price':
+            queryset = queryset.order_by('price')
+        elif sort == '-price':
+            queryset = queryset.order_by('-price')
+        elif sort == 'time':
+            queryset = queryset.order_by('start_time')
+        else:
+            queryset = queryset.order_by('start_time', 'price')
+        return queryset
 
 
 class SessionTomorrowListView(ListView):
@@ -375,4 +395,14 @@ class SessionTomorrowListView(ListView):
     def get_queryset(self):
         tomorrow = timezone.now().date() + timezone.timedelta(days=1)
         queryset = super().get_queryset()
-        return queryset.filter(start_date__lte=tomorrow, end_date__gte=tomorrow)
+        queryset = queryset.filter(start_date__lte=tomorrow, end_date__gte=tomorrow)
+        sort = self.request.GET.get('sort')
+        if sort == 'price':
+            queryset = queryset.order_by('price')
+        elif sort == '-price':
+            queryset = queryset.order_by('-price')
+        elif sort == 'time':
+            queryset = queryset.order_by('start_time')
+        else:
+            queryset = queryset.order_by('start_time', 'price')
+        return queryset

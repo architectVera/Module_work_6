@@ -1,3 +1,5 @@
+import datetime
+
 from django.utils import timezone
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
@@ -43,6 +45,11 @@ class Session(models.Model):
 
     def __str__(self):
         return f"{self.movie} ({self.hall}): {self.start_date} {self.start_time}"
+
+    def get_dates(self):
+        delta = self.end_date - self.start_date
+        dates = [str(self.start_date + datetime.timedelta(days=i)) for i in range(delta.days + 1)]
+        return dates
 
     def get_absolute_url(self):
         """ This method return absolute url"""
