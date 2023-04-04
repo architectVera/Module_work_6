@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.db import models
 from django.views.generic import DetailView, ListView
 
-from .models import Session, Purchase, SoldTicketsByDay, FreeSeatsByDay
+from .models import Session, Purchase, FreeSeatsByDay
 
 
 def purchase_session(request, pk):
@@ -17,6 +17,7 @@ def purchase_session(request, pk):
     session = get_object_or_404(Session, pk=pk)
     hall_capacity = session.hall.seats
     remaining_capacity = 0
+    free_seats_by_day = FreeSeatsByDay(session).get_free_seats_by_day()
 
     if request.method == 'POST':
         quantity = int(request.POST.get('quantity'))
@@ -24,14 +25,20 @@ def purchase_session(request, pk):
         tickets_sold = Purchase.objects.filter(showdata=showdata, session=session).aggregate(Sum('quantity'))[
                            'quantity__sum'] or 0
         remaining_capacity = hall_capacity - tickets_sold
+        current_time = timezone.localtime(timezone.now()).time()
 
         if showdata < timezone.now().date():
-            messages.error(request, 'Show date cannot be less than today.')
+            messages.error(request, 'Show date cannot be less than today')
+            return render(request, 'purchase_session.html',
+                          {'session': session, 'remaining_capacity': remaining_capacity})
+
+        if showdata == timezone.now().date() and current_time > session.start_time:
+            messages.error(request, 'The session has already started. Please choose another session or day')
             return render(request, 'purchase_session.html',
                           {'session': session, 'remaining_capacity': remaining_capacity})
 
         if showdata > session.end_date:
-            messages.error(request, 'You can only select the dates within which films are shown.')
+            messages.error(request, 'You can only select the dates within which films are shown')
             return render(request, 'purchase_session.html',
                           {'session': session, 'remaining_capacity': remaining_capacity})
 
@@ -50,15 +57,8 @@ def purchase_session(request, pk):
             request.user.wallet -= session.price * quantity
             request.user.save()
             return redirect('purchase_detail', purchase_id=purchase.id, user_id=request.user.id)
-        else:
-            error_message = 'Purchase failed. Please check that you have enough balance, the quantity is within the ' \
-                            'vailable capacity, and the show date is within the session date range.'
-            return render(request, 'purchase_session.html',
-                          {'session': session, 'remaining_capacity': remaining_capacity},
-                          {'error_message': error_message})
+
     else:
-        # sold_tickets_by_day = SoldTicketsByDay(session).get_sold_tickets_by_day()
-        free_seats_by_day = FreeSeatsByDay(session).get_free_seats_by_day()
         return render(request, 'purchase_session.html', {'session': session, 'remaining_capacity': remaining_capacity,
                                                          'free_seats_by_day': free_seats_by_day.items()})
 

@@ -79,7 +79,7 @@
 {% for date, free_seats in free_seats_by_day %}
     <p>{{ date }} - {{ free_seats }} tickets available</p>
 {% endfor %}
-      <p>For other dates, the entire number of tickets is available<p>
+      <p>All {{ session.hall.seats }} tickets are available for other dates<p>
 
       {% else %}
             <p>

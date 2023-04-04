@@ -2,7 +2,8 @@ from rest_framework.routers import SimpleRouter
 from django.urls import path, include
 from rest_framework.authtoken import views
 from api.views import LoginView, LogoutView, RegisterView, UsersViewSet, MovieViewSet, HallViewSet, SessionViewSet, \
-    SessionTodayListAPIView, SessionTomorrowListAPIView
+    SessionTodayListAPIView, SessionTomorrowListAPIView, purchase_session_api, PurchaseSessionAPIView, \
+    PurchaseListAPIView, TodaySessionsListView
 
 app_name = 'api'
 
@@ -23,5 +24,8 @@ urlpatterns = [
 
     path('sessions/today/', SessionTodayListAPIView.as_view(), name='session-today-list'),
     path('sessions/tomorrow/', SessionTomorrowListAPIView.as_view(), name='session-tomorrow-list'),
-
+    path('purchase/<int:pk>/', purchase_session_api, name='purchase-session'),
+    path('purchase/<int:user_id>', PurchaseListAPIView.as_view(), name='purchase-list'),
+    path('purchase/<int:user_id>/<int:purchase_id>/', PurchaseSessionAPIView.as_view(), name='purchase_detail'),
+    path('today-sessions/', TodaySessionsListView.as_view(), name='today-session')
 ]

@@ -40,32 +40,21 @@ class Purchase(models.Model):
         return reverse('purchase_detail', kwargs={'purchase_id': self.id, 'user_id': self.user.id})
 
 
-class SoldTicketsByDay:
-    def __init__(self, session):
-        self.session = session
-
-    def get_sold_tickets_by_day(self):
-        sold_tickets_by_day = defaultdict(int)
-
-        purchases = Purchase.objects.filter(session=self.session)
-
-        for purchase in purchases:
-            sold_tickets_by_day[purchase.showdata] += purchase.quantity
-
-        return dict(sold_tickets_by_day)
-
 class FreeSeatsByDay:
     def __init__(self, session):
         self.session = session
 
     def get_free_seats_by_day(self):
-        free_seats_by_day = defaultdict(int)
 
-        purchases = Purchase.objects.filter(session=self.session)
-        total_seats = self.session.hall.seats
+        free_seats_by_day = {}
 
-        for purchase in purchases:
-            free_seats_by_day[purchase.showdata] += total_seats - purchase.quantity
+        purchases_by_day = Purchase.objects.filter(session=self.session).values('showdata').annotate(
+            total_sold=Sum('quantity'))
 
-        return dict(free_seats_by_day)
+        for purchase in purchases_by_day:
+            date = purchase['showdata']
+            total_sold = purchase['total_sold'] or 0
+            free_seats = self.session.hall.seats - total_sold
+            free_seats_by_day[date] = free_seats
 
+        return free_seats_by_day
