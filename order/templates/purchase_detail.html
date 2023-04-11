@@ -3,37 +3,37 @@
 {% block content %}
 <div class="container">
     {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li style="color: red">{% if message.tags %} {% endif %} {{ message }}</li>
-            {% endfor %}
-        </ul>
+    <ul class="messages">
+        {% for message in messages %}
+        <li style="color: red">{% if message.tags %} {% endif %} {{ message }}</li>
+        {% endfor %}
+    </ul>
     {% endif %}
 </div>
-    <div class="container">
+<div class="container">
 
-        <div class="row row-cols-1 row-cols-md-3 g-4 position-relative">
-            <article class="col">
-                <div class="card shadow">
-                    <div class="card-body">
-                        <small><i class="bi bi-calendar mx-1"></i><span>Purchase №{{ object.id }} time: {{ object.timestamp|date:"d M Y P" }}</span>
-                        </small>
-                        <p></p>
-                        <small>Film:</small>
-                        <h2 class="card-title">{{ object.session.movie.title|truncatewords:8 }}</h2>
-                        <small><i class="bi bi-calendar mx-1"></i><span>Start time {{ object.session.start_time }} End time: {{ object.session.end_time }}</span>
-                        </small>
-                        <p></p>
-                        <h4 class="card-title"> Data: {{ object.showdata }}</h4>
+    <div class="row row-cols-1 row-cols-md-3 g-4 position-relative">
+        <article class="col">
+            <div class="card shadow">
+                <div class="card-body">
+                    <small><i class="bi bi-calendar mx-1"></i><span>Purchase №{{ object.id }} time: {{ object.timestamp|date:"d M Y P" }}</span>
+                    </small>
+                    <p></p>
+                    <small>Film:</small>
+                    <h2 class="card-title">{{ object.session.movie.title|truncatewords:8 }}</h2>
+                    <small><i class="bi bi-calendar mx-1"></i><span>Start time {{ object.session.start_time }} End time: {{ object.session.end_time }}</span>
+                    </small>
+                    <p></p>
+                    <h4 class="card-title"> Data: {{ object.showdata }}</h4>
 
-                        <p class="card-text">Quantity:  {{ object.quantity }}</p>
-                        <p class="card-text">Price:  {{ object.session.price }} UA</p>
-                        <p class="card-text">
-                            <b>Total: {{ object.total }} UA</b>
-                        </p>
-                    </div>
+                    <p class="card-text">Quantity: {{ object.quantity }}</p>
+                    <p class="card-text">Price: {{ object.session.price }} UA</p>
+                    <p class="card-text">
+                        <b>Total: {{ object.total }} UA</b>
+                    </p>
                 </div>
-            </article>
-        </div>
+            </div>
+        </article>
     </div>
+</div>
 {% endblock %}

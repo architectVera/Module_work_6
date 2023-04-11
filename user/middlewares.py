@@ -1,17 +1,30 @@
-from django.conf import settings
-from django.contrib.sessions.models import Session
-from django.urls import reverse_lazy, reverse
+"""Middlewares for mycinema app"""
+
 from django.utils import timezone
 from django.contrib.auth import logout
 from rest_framework.authtoken.models import Token
-from django.urls import reverse_lazy, reverse
 
 
 class AdminAutoLogoutMiddleware:
+    """Middleware to automatically log out non-superuser authenticated users
+    after a period of inactivity.
+
+    The middleware checks the user's last activity time stored in the session
+    and logs them out if the idle time exceeds a certain threshold (30 minutes
+    in this case). Additionally, it deletes the user's authentication token,
+    if any, to ensure that they cannot use the API after being logged out.
+
+    Attributes:
+        get_response: A callable that takes a request and returns a response."""
+
     def __init__(self, get_response):
+        """Initializes a new instance of the `AdminAutoLogoutMiddleware` class."""
+
         self.get_response = get_response
 
     def __call__(self, request):
+        """Handles an incoming request and returns a response."""
+
         response = self.get_response(request)
 
         user = request.user
@@ -32,5 +45,3 @@ class AdminAutoLogoutMiddleware:
             request.session['last_activity'] = timezone.now().isoformat()
 
         return response
-
-

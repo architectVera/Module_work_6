@@ -1,40 +1,40 @@
 {% extends "base.html" %}
 {% block title %}Create hall{% endblock %}
 {% block content %}
-    <div class="container">
+<div class="container">
     {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}></li>
-            {% endfor %}
-        </ul>
+    <ul class="messages">
+        {% for message in messages %}
+        <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}></li>
+        {% endfor %}
+    </ul>
     {% endif %}
-    </div>
-    <main class="form-auth form-signin w-100 m-auto">
-{% if form.errors %}
+</div>
+<main class="form-auth form-signin w-100 m-auto">
+    {% if form.errors %}
     <div class="alert alert-danger">
         {% for field, errors in form.errors.items %}
-            {% for error in errors %}
-                <strong>{{ field|title }}:</strong> {{ error }}<br>
-            {% endfor %}
+        {% for error in errors %}
+        <strong>{{ field|title }}:</strong> {{ error }}<br>
+        {% endfor %}
         {% endfor %}
     </div>
-{% endif %}        <form method="POST" action="">
-            {% csrf_token %}
-            <h1 class="h3 mb-3 fw-normal">Create hall</h1>
-            <div class="form-floating">
-                {{ form.name }}
-                <label>{{ form.name.label }}</label>
-            </div>
-            <p></p>
-            <p>Total number of seats in the hall:</p>
-            <div class="form-floating">{{ form.seats }}</div>
-            <p></p>
-            <div class="my-3">
-                <a href="{% url 'hall-list' %}" class="text-body fw-bold">See all halls</a>
-            </div>
-            <button class="w-100 btn btn-lg btn-primary" type="submit">Create</button>
-        </form>
-    </main>
+    {% endif %}
+    <form method="POST" action="">
+        {% csrf_token %}
+        <h1 class="h3 mb-3 fw-normal">Create hall</h1>
+        <div class="form-floating">
+            {{ form.name }}
+            <label>{{ form.name.label }}</label>
+        </div>
+        <p></p>
+        <p>Total number of seats in the hall:</p>
+        <div class="form-floating">{{ form.seats }}</div>
+        <p></p>
+        <div class="my-3">
+            <a href="{% url 'hall-list' %}" class="text-body fw-bold">See all halls</a>
+        </div>
+        <button class="w-100 btn btn-lg btn-primary" type="submit">Create</button>
+    </form>
+</main>
 {% endblock %}
-}

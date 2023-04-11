@@ -8,18 +8,14 @@ from django.urls import reverse_lazy
 
 from django.views import View
 
+from django.contrib.auth import get_user_model
 from django.contrib.auth import login, logout
 from django.contrib import messages
 
+from rest_framework.authtoken.models import Token
+
 from user.forms import SignUpForm, SignInForm
 
-from rest_framework.authtoken.models import Token
-from django.contrib.auth import get_user_model
-from rest_framework import status
-from rest_framework.views import APIView
-from rest_framework.response import Response
-
-from user.serializers import UserModelSerializer
 
 User = get_user_model()
 
@@ -64,9 +60,9 @@ class UserLoginView(View):
         """ Describes the behaviour when call POST"""
 
         form = SignInForm(request.POST)
+
         if form.is_valid():
             login(request, form.user)
-            # request.session['user_id'] = User.id
             token, _ = Token.objects.get_or_create(user=form.user)
             redirect_url = reverse_lazy("mycinema")
             return HttpResponseRedirect(redirect_url)
@@ -78,8 +74,7 @@ class UserLogoutView(View):
 
     def get(self, request):
         """ Describes the behaviour when call GET"""
-        # user_id = request.session.pop('user_id', None)
-        # if user_id:
+
         Token.objects.filter(user=request.user).delete()
         logout(request)
         redirect_url = reverse_lazy('mycinema')

@@ -1,8 +1,15 @@
+"""Serializer for order app"""
+
 from rest_framework import serializers
-from .models import Purchase, Session
+
+from order.models import Purchase
+
+from kinohall.models import Session
 
 
 class PurchaseSerializer(serializers.ModelSerializer):
+    """Serializer for the Purchase model"""
+
     session = serializers.PrimaryKeyRelatedField(queryset=Session.objects.all())
     total = serializers.SerializerMethodField()
 

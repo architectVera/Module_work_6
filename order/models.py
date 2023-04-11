@@ -3,12 +3,10 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import Sum
-from collections import defaultdict
 
 from django.urls import reverse
 
 from kinohall.models import Session
-from user.models import UserModel
 
 User = get_user_model()
 
@@ -41,15 +39,19 @@ class Purchase(models.Model):
 
 
 class FreeSeatsByDay:
+    """Class for calculating the number of free seats for a given session, grouped by day."""
+
     def __init__(self, session):
         self.session = session
 
     def get_free_seats_by_day(self):
+        """Returns a dictionary that maps each day on which the session takes place
+        to the number of free seats available on that day."""
 
         free_seats_by_day = {}
 
-        purchases_by_day = Purchase.objects.filter(session=self.session).values('showdata').annotate(
-            total_sold=Sum('quantity'))
+        purchases_by_day = Purchase.objects.filter(session=self.session).values(
+            'showdata').annotate(total_sold=Sum('quantity'))
 
         for purchase in purchases_by_day:
             date = purchase['showdata']

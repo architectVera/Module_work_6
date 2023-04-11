@@ -2,136 +2,137 @@
 {% block title %}Movie List{% endblock %}
 {% block content %}
 
-    <!--main content   -->
-    <main class="container">
-        {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                    <li>{% if message.tags %} {% endif %}{{ message }}</li>
-                {% endfor %}
+<!--main content   -->
+<main class="container">
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li>{% if message.tags %} {% endif %}{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <div class="row">
+        <section class="col-md-9 mb-2" role="main">
+            <button type="button"
+                    class="btn btn-secondary dropdown-toggle"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false">Sort by
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <a href="{% url 'mycinema' %}?sort=price" class="dropdown-item">Lowest Price</a>
+                </li>
+                <li>
+                    <a href="{% url 'mycinema' %}?sort=-price" class="dropdown-item">Highest Price</a>
+                </li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li>
+                    <a href="{% url 'mycinema' %}?sort=time" class="dropdown-item">Time</a>
+                </li>
             </ul>
-        {% endif %}
-        <div class="row">
-            <section class="col-md-9 mb-2" role="main">
-                    <button type="button"
-                            class="btn btn-secondary dropdown-toggle"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false">Sort by
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="{% url 'mycinema' %}?sort=price" class="dropdown-item">Lowest Price</a>
+            <p></p>
+            <h1 class="h1">Today's sessions</h1>
+
+            <div class="row row-cols-1 row-cols-md-3 g-4 position-relative">
+                <!--sessions-->
+                {% for object in object_list %}
+                <article class="col">
+                    <div class="card shadow">
+                        <img src="{{ object.movie.image.url }}" alt="{{ object.movie.title }}" class="card-img-top">
+
+                        <div class="card-body">
+                            <strong class="fw-light">Session:</strong>
+                            <h2 class="card-title">{{ object.movie|truncatewords:8 }}</h2>
+                            <small>
+                                <i class="bi bi-calendar mx-1"></i><span>Film release year {{ object.year }}</span>
+                            </small>
+                            <p class="card-text">{{ object.movie.description|truncatewords:40 }}</p>
+
+                            <p>Show date from
+                            <p><b>{{ object.start_date }} till {{ object.end_date }}</b></p></p>
+
+                            <p>Movie start time: {{ object.start_time }}</p>
+                            <p>Movie end time: {{ object.end_time }}</p>
+                            <p>Ticket price: <b> {{ object.price }} UA</b></p>
+                            <p>Seats: {{object.hall.seats }} pcs</p>
+                            <a href="{% url 'purchase-session' object.id %}"
+                               class="card-link text-body fw-bold">More information...</a>
+                        </div>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+        </section>
+        <!--Right section     -->
+        <section class="col-md-3">
+            <div class="position-sticky">
+                <div class="p-4 mb-3 bg-light rounded">
+                    <h4 class="h4">About Us</h4>
+                    <p>
+                        This project is an incredible opportunity to gain valuable and useful experience in website
+                        development on
+                        the Django framework.
+                    </p>
+                </div>
+                <div class="ps-4">
+                    <h4>Archive</h4>
+                    <ul class="list-unstyled">
+                        <li class="text-capitalize">
+                            <a href="" class="link-secondary">january 2023</a>
                         </li>
-                        <li>
-                            <a href="{% url 'mycinema' %}?sort=-price" class="dropdown-item">Highest Price</a>
+                        <li class="text-capitalize">
+                            <a href="" class="link-secondary">december 2022</a>
                         </li>
-                        <li>
-                            <hr class="dropdown-divider">
+                        <li class="text-capitalize">
+                            <a href="" class="link-secondary">november 2022</a>
                         </li>
-                        <li>
-                            <a href="{% url 'mycinema' %}?sort=time" class="dropdown-item">Time</a>
+                        <li class="text-capitalize">
+                            <a href="" class="link-secondary">october 2022</a>
+                        </li>
+                        <li class="text-capitalize">
+                            <a href="" class="link-secondary">september 2022</a>
+                        </li>
+                        <li class="text-capitalize">
+                            <a href="" class="link-secondary">august 2022</a>
+                        </li>
+                        <li class="text-capitalize">
+                            <a href="" class="link-secondary">july 2022</a>
+                        </li>
+                        <li class="text-capitalize">
+                            <a href="" class="link-secondary">june 2022</a>
+                        </li>
+                        <li class="text-capitalize">
+                            <a href="" class="link-secondary">may 2022</a>
+                        </li>
+                        <li class="text-capitalize">
+                            <a href="" class="link-secondary">april 2022</a>
+                        </li>
+                        <li class="text-capitalize">
+                            <a href="" class="link-secondary">march 2022</a>
+                        </li>
+                        <li class="text-capitalize">
+                            <a href="" class="link-secondary">february 2022</a>
                         </li>
                     </ul>
-                <p></p>
-                <h1 class="h1">Today's sessions</h1>
-
-                <div class="row row-cols-1 row-cols-md-3 g-4 position-relative">
-                    <!--sessions-->
-                    {% for object in object_list %}
-                        <article class="col">
-                            <div class="card shadow">
-                                <img src="https://loremflickr.com/320/240?random=1"
-                                     alt="Blog post image"
-                                     class="card-img-top">
-                                <div class="card-body">
-                                    <strong class="fw-light">Session:</strong>
-                                    <h2 class="card-title">{{ object.movie|truncatewords:8 }}</h2>
-                                    <small>
-                                        <i class="bi bi-calendar mx-1"></i><span>Film release year {{ object.year }}</span>
-                                    </small>
-                                    <p class="card-text">{{ object.movie.description|truncatewords:40 }}</p>
-
-                                    <p>Show date from  <p><b>{{ object.start_date }} till {{ object.end_date }}</b></p></p>
-
-                                    <p>Movie start time: {{ object.start_time }}</p>
-                                    <p>Movie end time: {{ object.end_time }}</p>
-                                    <p>Ticket price: <b> {{ object.price }} UA</b></p>
-                                    <p>Seats: {{object.hall.seats }}  pcs</p>
-                                    <a href="{% url 'purchase-session' object.id %}"
-                                       class="card-link text-body fw-bold">More information...</a>
-                                </div>
-                            </div>
-                        </article>
-                    {% endfor %}
                 </div>
-            </section>
-            <!--Right section     -->
-            <section class="col-md-3">
-                <div class="position-sticky">
-                    <div class="p-4 mb-3 bg-light rounded">
-                        <h4 class="h4">About Us</h4>
-                        <p>
-                            This project is an incredible opportunity to gain valuable and useful experience in website development on
-                            the Django framework.
-                        </p>
-                    </div>
-                    <div class="ps-4">
-                        <h4>Archive</h4>
-                        <ul class="list-unstyled">
-                            <li class="text-capitalize">
-                                <a href="" class="link-secondary">january 2023</a>
-                            </li>
-                            <li class="text-capitalize">
-                                <a href="" class="link-secondary">december 2022</a>
-                            </li>
-                            <li class="text-capitalize">
-                                <a href="" class="link-secondary">november 2022</a>
-                            </li>
-                            <li class="text-capitalize">
-                                <a href="" class="link-secondary">october 2022</a>
-                            </li>
-                            <li class="text-capitalize">
-                                <a href="" class="link-secondary">september 2022</a>
-                            </li>
-                            <li class="text-capitalize">
-                                <a href="" class="link-secondary">august 2022</a>
-                            </li>
-                            <li class="text-capitalize">
-                                <a href="" class="link-secondary">july 2022</a>
-                            </li>
-                            <li class="text-capitalize">
-                                <a href="" class="link-secondary">june 2022</a>
-                            </li>
-                            <li class="text-capitalize">
-                                <a href="" class="link-secondary">may 2022</a>
-                            </li>
-                            <li class="text-capitalize">
-                                <a href="" class="link-secondary">april 2022</a>
-                            </li>
-                            <li class="text-capitalize">
-                                <a href="" class="link-secondary">march 2022</a>
-                            </li>
-                            <li class="text-capitalize">
-                                <a href="" class="link-secondary">february 2022</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="ps-4">
-                        <h4>Out social media</h4>
-                        <ul class="nav">
-                            <li class="nav-item">
-                                <a href="" class="nav-link"><i class="social bi bi-facebook"></i></a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="" class="nav-link"><i class="social bi bi-instagram"></i></a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="" class="nav-link"><i class="social bi bi-github"></i></a>
-                            </li>
-                        </ul>
-                    </div>
+                <div class="ps-4">
+                    <h4>Out social media</h4>
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a href="" class="nav-link"><i class="social bi bi-facebook"></i></a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="" class="nav-link"><i class="social bi bi-instagram"></i></a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="" class="nav-link"><i class="social bi bi-github"></i></a>
+                        </li>
+                    </ul>
                 </div>
-            </section>
-        </div>
-    </main>
+            </div>
+        </section>
+    </div>
+</main>
 {% endblock %}

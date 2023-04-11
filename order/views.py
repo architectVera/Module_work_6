@@ -1,18 +1,37 @@
-import datetime
+""" Views for the order app  """
+
 from django.contrib import messages
 
-from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ValidationError
 from django.db.models import Sum
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
-from django.db import models
 from django.views.generic import DetailView, ListView
 
 from .models import Session, Purchase, FreeSeatsByDay
 
 
 def purchase_session(request, pk):
+    """
+    View function for purchasing tickets for a specific movie session.
+
+    Args:
+    request (HttpRequest): The HTTP request object.
+    pk (int): The primary key of the session to purchase tickets for.
+
+    Returns:
+    HttpResponse: The HTTP response object.
+
+    Raises:
+    Http404: If the session with the specified primary key does not exist.
+
+    The function first retrieves the session object from the database using its primary key. It then checks the capacity of the hall where the session is being held, the remaining capacity of the hall after tickets that have already been sold are subtracted, and the free seats available for each day of the session.
+
+    If the request method is POST, the function checks if the selected show date is valid and if the user has sufficient funds to purchase the specified quantity of tickets. It also checks if there are enough tickets available for purchase and creates a new Purchase object if all conditions are met.
+
+    If the request method is not POST, the function simply renders the purchase_session.html template with the session and related information.
+
+    Messages are displayed to the user to indicate any errors that occur during the ticket purchase process.
+    """
 
     session = get_object_or_404(Session, pk=pk)
     hall_capacity = session.hall.seats

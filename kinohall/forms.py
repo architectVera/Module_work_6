@@ -1,19 +1,17 @@
 """ Create Kinohall form """
+
 from datetime import date
 
 from django import forms
 from django.core.exceptions import ValidationError
-from django.core.validators import MinValueValidator
 from django.db.models import Q
-
 
 from kinohall.models import Movie, Session, Hall
 
 
 class CreateMovieForm(forms.ModelForm):
-    """
-    The class describes the mod for creating a new movie
-    """
+    """The class describes the mod for creating a new movie"""
+
     class Meta:
         """Describes the behavior of CreateMovieForm model """
 
@@ -45,9 +43,8 @@ class CreateMovieForm(forms.ModelForm):
 
 
 class CreateHallForm(forms.ModelForm):
-    """
-    The class describes the mod for creating a new hall
-    """
+    """The class describes the mod for creating a new hall"""
+
     class Meta:
         """Describes the behavior of CreateHallForm model """
 
@@ -72,7 +69,11 @@ class CreateHallForm(forms.ModelForm):
 
 
 class CreateSessionForm(forms.ModelForm):
+    """The class describes the mod for creating a new session"""
+
     class Meta:
+        """Describes the behavior of CreateSessionForm model """
+
         model = Session
         fields = ['start_time', 'end_time', 'start_date', 'end_date', 'price', 'hall', 'movie']
         labels = {

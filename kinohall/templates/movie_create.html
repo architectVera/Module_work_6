@@ -1,38 +1,40 @@
 {% extends "base.html" %}
 {% block title %}Create movie{% endblock %}
 {% block content %}
+<div class="container">
     {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
+    <ul class="messages">
+        {% for message in messages %}
+        <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
     {% endif %}
-    <main class="form-auth form-signin w-100 m-auto">
-        {{ form.errors }}
-        <form method="POST" action="">
-            {% csrf_token %}
-            <h1 class="h3 mb-3 fw-normal">Create movie</h1>
-            <div class="form-floating">
-                {{ form.title }}
-                <label>{{ form.title.label }} of product</label>
-            </div>
-            <p></p>
-            <div class="form-floating">{{ form.image }}</div>
-            <p></p>
+</div>
+<main class="form-auth form-signin w-100 m-auto">
+    {{ form.errors }}
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h1 class="h3 mb-3 fw-normal">Create movie</h1>
+        <div class="form-floating">
+            {{ form.title }}
+            <label>{{ form.title.label }} of product</label>
+        </div>
+        <p></p>
+        <div class="form-floating">{{ form.image }}</div>
+        <p></p>
 
-            <div class="form-floating" >{{ form.description }}</div>
-            <p></p>
-            <div class="form-floating">
-                {{ form.year }}
-                <label>{{ form.price.label }}</label>
-            </div>
-            <p></p>
+        <div class="form-floating">{{ form.description }}</div>
+        <p></p>
+        <div class="form-floating">
+            {{ form.year }}
+            <label>{{ form.price.label }}</label>
+        </div>
+        <p></p>
 
-            <div class="my-3">
-                <a href="{% url 'movie-list' %}" class="text-body fw-bold">See all movies</a>
-            </div>
-            <button class="w-100 btn btn-lg btn-primary" type="submit">Create</button>
-        </form>
-    </main>
+        <div class="my-3">
+            <a href="{% url 'movie-list' %}" class="text-body fw-bold">See all movies</a>
+        </div>
+        <button class="w-100 btn btn-lg btn-primary" type="submit">Create</button>
+    </form>
+</main>
 {% endblock %}

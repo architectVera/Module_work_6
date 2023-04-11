@@ -66,9 +66,19 @@ class SignUpForm(forms.Form):
         username = self.cleaned_data["username"]
         try:
             User.objects.get(username=username)
-            raise ValidationError("username exists")
+            raise ValidationError("This Username already exists.")
         except User.DoesNotExist:
             return username
+
+    def clean_email(self):
+        """This method to provide custom model validation and to modify attributes. """
+
+        email = self.cleaned_data["email"]
+        try:
+            User.objects.get(email=email)
+            raise ValidationError("This email already exists.")
+        except User.DoesNotExist:
+            return email
 
     def clean(self):
         """This method to provide custom model validation and to modify attributes. """
@@ -77,13 +87,10 @@ class SignUpForm(forms.Form):
         confirm_password = self.cleaned_data["confirm_password"]
         if password != confirm_password:
             # raise ValidationError("password do not match")
-            self.add_error("password", "Password do not match")
-            self.add_error("confirm_password", "Password do not match")
+            self.add_error("password", "Passwords do not match, please check")
 
     def save(self):
         """The method which is executed to save an instance"""
 
         del self.cleaned_data["confirm_password"]
         User.objects.create_user(**self.cleaned_data)
-
-

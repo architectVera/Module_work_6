@@ -6,34 +6,41 @@
 {% block content %}
 
 <!--Movie-->
-    <div class="container">
-        {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                    <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-<section class="col-md-9 mb-2" role="main">
-      <h1 class="h1">{{ object.title }}</h1>
-      <div class="row position-relative">
-        <article class="col w-100">
-          <div class="mb-3">
-            <strong class="fw-light">Year: {{ object.year}}</strong>
-          </div>
-          <p>
-            {{ object.description|linebreaks}}
-          </p>
-        </article>
-      </div>
-  <div>
-    <a href="{% url 'movie-update' object.id %}" class="w-100 btn btn-primary" role="button">Update</a>
-  </div>
-  <p></p>
-  <div>
-    <a href="{% url 'movie-delete' object.id %}" class="w-100 btn btn-primary" role="button">Delete</a>
+<div class="container">
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 
-  </div>
+    <section class="col-md-9 mb-2" role="main">
+
+        <article class="col" style="width: 140px">
+            <div class="card shadow">
+                <img src="{{ object.image.url }}" alt="{{ object.title }}" class="card-img-top">
+            </div>
+        </article>
+        <h1 class="h1">{{ object.title }}</h1>
+        <div class="row position-relative">
+            <article class="col w-100">
+                <div class="mb-3">
+                    <strong class="fw-light">Year: {{ object.year}}</strong>
+                </div>
+                <p>
+                    {{ object.description|linebreaks}}
+                </p>
+            </article>
+        </div>
+        <div>
+            <a href="{% url 'movie-update' object.id %}" class="w-100 btn btn-primary" role="button">Update</a>
+        </div>
+        <p></p>
+        <div>
+            <a href="{% url 'movie-delete' object.id %}" class="w-100 btn btn-primary" role="button">Delete</a>
+
+        </div>
     </section>
-    </div>>
+</div>>
 {% endblock %}

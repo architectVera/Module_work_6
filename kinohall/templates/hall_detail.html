@@ -6,32 +6,32 @@
 {% block content %}
 
 <!--Hall-->
-    <div class="container">
-        {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                    <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-<section class="col-md-9 mb-2" role="main">
-      <strong class="fw-light">Hall name:</strong>
-      <h1 class="h1">{{ object.name }}</h1>
-      <div class="row position-relative">
-        <article class="col w-100">
-          <div class="mb-3">
-              <strong class="fw-light">Total number of seats in the hall:  <b>{{ object.seats}}</b></strong>
-          </div>
-        </article>
-      </div>
-  <div>
-    <a href="{% url 'hall-update' object.id %}" class="w-100 btn btn-primary" role="button">Update</a>
-  </div>
-  <p></p>
-  <div>
-    <a href="{% url 'hall-delete' object.id %}" class="w-100 btn btn-primary" role="button">Delete</a>
+<div class="container">
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <section class="col-md-9 mb-2" role="main">
+        <strong class="fw-light">Hall name:</strong>
+        <h1 class="h1">{{ object.name }}</h1>
+        <div class="row position-relative">
+            <article class="col w-100">
+                <div class="mb-3">
+                    <strong class="fw-light">Total number of seats in the hall: <b>{{ object.seats}}</b></strong>
+                </div>
+            </article>
+        </div>
+        <div>
+            <a href="{% url 'hall-update' object.id %}" class="w-100 btn btn-primary" role="button">Update</a>
+        </div>
+        <p></p>
+        <div>
+            <a href="{% url 'hall-delete' object.id %}" class="w-100 btn btn-primary" role="button">Delete</a>
 
-  </div>
+        </div>
     </section>
-    </div>>
+</div>>
 {% endblock %}

@@ -1,10 +1,14 @@
 """ URLS for the kinohall app  """
 
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
+
 from kinohall.views import CreateMovieView, MovieDetailView, UpdateMovieView, DeleteMovieView, \
     MovieListView, CreateHallView, HallDetailView, UpdateHallView, \
-    DeleteHallView, HallListView, CreateSessionView, SessionDetailView, UpdateSessionView, DeleteSessionView, \
-    SessionListView, SessionTodayListView, SessionTomorrowListView
+    DeleteHallView, HallListView, CreateSessionView, SessionDetailView, UpdateSessionView,\
+    DeleteSessionView, SessionListView, SessionTodayListView, SessionTomorrowListView
+
 
 urlpatterns = [
     path('today/', SessionTodayListView.as_view(), name='mycinema'),
@@ -28,4 +32,4 @@ urlpatterns = [
     path('session/<int:pk>/update/', UpdateSessionView.as_view(), name='session-update'),
     path('session/<int:pk>/delete/', DeleteSessionView.as_view(), name='session-delete'),
 
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

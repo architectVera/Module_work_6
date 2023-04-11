@@ -1,29 +1,28 @@
-from django.contrib.auth.mixins import UserPassesTestMixin
-from django.http import HttpRequest
-from django.shortcuts import render, redirect
-from django.contrib import messages
+""" Views for the kinohall app  """
 
-from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.shortcuts import redirect
+from django.contrib import messages
 
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView, ListView
 
+from order.models import Purchase
+
 from kinohall.forms import CreateMovieForm, CreateHallForm, CreateSessionForm
 from kinohall.models import Movie, Hall, Session
 
 
-from order.models import Purchase
-
-"""MOVIE"""
-
-
-class MovieListView(ListView):
+class MovieListView(UserPassesTestMixin, ListView):
     """ This view describes product list """
 
     model = Movie
     template_name = 'movie_list.html'
     allow_empty = True
+
+    def test_func(self):
+        return self.request.user.is_authenticated and self.request.user.is_superuser
 
 
 class MovieDetailView(DetailView):
@@ -35,6 +34,16 @@ class MovieDetailView(DetailView):
     pk_url_kwarg = 'pk'
     allow_empty = True
 
+    def test_func(self):
+        """This method checks if user is_staff"""
+
+        return self.request.user.is_staff
+
+    def handle_no_permission(self):
+        """Method called when the user does not have permission"""
+
+        messages.error(self.request, 'You do not have permission to access this page')
+        return redirect('user-login')
 
     def get_context_data(self, object_list=None, **kwargs):
         """ This method returns a filtered queryset by user """
@@ -95,6 +104,7 @@ class UpdateMovieView(UserPassesTestMixin, UpdateView):
 
 
 class DeleteMovieView(UserPassesTestMixin, DeleteView):
+    """ This view describes delete of the movie """
 
     model = Movie
     success_url = reverse_lazy('movie-list')
@@ -102,12 +112,17 @@ class DeleteMovieView(UserPassesTestMixin, DeleteView):
     template_name = 'movie_confirm_delete.html'
 
     def test_func(self):
-        """This method checking if user is_staff"""
+        """The test_func method is used to determine whether the user is
+          allowed to access the view. It checks if the user is a staff user
+          and that there are no sessions associated with the movie being deleted."""
+
         movie_id = self.kwargs['pk']
         session_with_movie = Session.objects.filter(movie__id__exact=movie_id)
         return self.request.user.is_staff and not session_with_movie.exists()
 
     def handle_no_permission(self):
+        """Method called when the user does not have permission to delete a movie"""
+
         messages.error(self.request, 'You cannot delete movie because it is used in some sessions')
         return redirect('movie-detail', pk=self.kwargs['pk'])
 
@@ -118,22 +133,26 @@ class DeleteMovieView(UserPassesTestMixin, DeleteView):
         return super().delete(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
+        """Returns the context data for rendering the view"""
+
         context = super().get_context_data(**kwargs)
         return context
 
 
-"""HALL"""
-
-
-class HallListView(ListView):
+class HallListView(UserPassesTestMixin, ListView):
     """ This view describes hall list """
 
     model = Hall
     template_name = 'hall_list.html'
     allow_empty = True
 
+    def test_func(self):
+        """This method checking if user is_staff"""
 
-class HallDetailView(DetailView):
+        return self.request.user.is_staff
+
+
+class HallDetailView(UserPassesTestMixin, DetailView):
     """ This view describes details of hall """
 
     model = Hall
@@ -141,6 +160,18 @@ class HallDetailView(DetailView):
     context_object_name = 'object'
     pk_url_kwarg = 'pk'
     allow_empty = True
+
+
+    def test_func(self):
+        """ This method checks if the user is staff """
+
+        return self.request.user.is_staff
+
+    def handle_no_permission(self):
+        """ Method called when the user does not have permission """
+
+        messages.error(self.request, 'You do not have permission to view this page')
+        return redirect('user-login')
 
     def get_context_data(self, object_list=None, **kwargs):
         """ This method returns a filtered queryset by user """
@@ -195,7 +226,10 @@ class UpdateHallView(UserPassesTestMixin, UpdateView):
         return self.request.user.is_staff and not purchases_with_hall.exists()
 
     def handle_no_permission(self):
-        messages.error(self.request, 'You cannot update this hall because some tickets have been sold')
+        """Handle case where user doesn't have permission to update hall"""
+
+        messages.error(self.request, 'You cannot update this hall because some'
+                                     ' tickets have been sold')
         return redirect('hall-detail', pk=self.kwargs['pk'])
 
     def form_valid(self, form):
@@ -212,6 +246,7 @@ class UpdateHallView(UserPassesTestMixin, UpdateView):
 
 
 class DeleteHallView(UserPassesTestMixin, DeleteView):
+    """View for deleting a Hall object"""
 
     model = Hall
     success_url = reverse_lazy('hall-list')
@@ -226,7 +261,10 @@ class DeleteHallView(UserPassesTestMixin, DeleteView):
         return self.request.user.is_staff and not purchases_with_hall.exists()
 
     def handle_no_permission(self):
-        messages.error(self.request, 'You cannot delete this hall because some tickets have been sold')
+        """Handles the case where the user is not authorized to delete the Hall object"""
+
+        messages.error(self.request, 'You cannot delete this hall because some'
+                                     ' tickets have been sold')
         return redirect('hall-detail', pk=self.kwargs['pk'])
 
     def delete(self, request, *args, **kwargs):
@@ -236,16 +274,29 @@ class DeleteHallView(UserPassesTestMixin, DeleteView):
         return super().delete(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
+        """Adds extra context data to the view"""
+
         context = super().get_context_data(**kwargs)
         return context
 
 
-"""SESSION"""
-"""SESSION VIEW"""
-
-
 class SessionListView(ListView):
-    """ This view describes product list """
+    """A view that displays a list of movie sessions sorted by start time and price.
+
+        The list can be sorted by price (ascending or descending) or by start time
+        (ascending).
+        The view uses a queryset of Session model objects.
+
+        Attributes:
+            model: A Session model object.
+            template_name: A string representing the name of a template.
+            allow_empty: A boolean attribute that allows or disallows empty querysets.
+            paginate_by: An integer attribute that represents the number of objects per
+            page in pagination.
+
+        Methods:
+            get_queryset: A method that returns a queryset of Session objects sorted by
+            a chosen parameter."""
 
     model = Session
     template_name = 'session_list.html'
@@ -255,6 +306,7 @@ class SessionListView(ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         sort = self.request.GET.get('sort')
+
         if sort == 'price':
             queryset = queryset.order_by('price')
         elif sort == '-price':
@@ -274,7 +326,6 @@ class SessionDetailView(DetailView):
     context_object_name = 'object'
     pk_url_kwarg = 'pk'
     allow_empty = True
-
 
     def get_context_data(self, object_list=None, **kwargs):
         """ This method returns a filtered queryset by user """
@@ -311,14 +362,19 @@ class UpdateSessionView(UserPassesTestMixin, UpdateView):
     pk_url_kwarg = 'pk'
 
     def test_func(self):
-        """This method checking if user is_staff and there is no purchase with session_id=pk and paid=True"""
+        """This method checking if user is_staff and there is no purchase
+            with session_id=pk and paid=True"""
 
         session_id = self.kwargs['pk']
         purchases_with_session = Purchase.objects.filter(session_id=session_id, paid=True)
         return self.request.user.is_staff and not purchases_with_session.exists()
 
     def handle_no_permission(self):
-        messages.error(self.request, 'You cannot update this session because some tickets have been sold')
+        """Action to take if the user does not have permission to update
+        the session."""
+
+        messages.error(self.request, 'You cannot update this session because some tickets'
+                                     ' have been sold')
         return redirect('session-detail', pk=self.kwargs['pk'])
 
     def form_valid(self, form):
@@ -335,6 +391,8 @@ class UpdateSessionView(UserPassesTestMixin, UpdateView):
 
 
 class DeleteSessionView(UserPassesTestMixin, DeleteView):
+    """View for deleting a session object. Inherits from UserPassesTestMixin
+     and DeleteView."""
 
     model = Session
     success_url = reverse_lazy('session-list')
@@ -342,13 +400,19 @@ class DeleteSessionView(UserPassesTestMixin, DeleteView):
     template_name = 'session_confirm_delete.html'
 
     def test_func(self):
-        """This method checking if user is_staff and there is no purchase with session_id=pk and paid=True"""
+        """This method checking if user is_staff and there is no purchase with
+         session_id=pk and paid=True"""
+
         session_id = self.kwargs['pk']
         purchases_with_session = Purchase.objects.filter(session_id=session_id, paid=True)
         return self.request.user.is_staff and not purchases_with_session.exists()
 
     def handle_no_permission(self):
-        messages.error(self.request, 'You cannot delete this session because some tickets have been sold')
+        """Action to take if the user does not have permission to delete
+        the session."""
+
+        messages.error(self.request, 'You cannot delete this session because some '
+                                     'tickets have been sold')
         return redirect('session-detail', pk=self.kwargs['pk'])
 
     def delete(self, request, *args, **kwargs):
@@ -358,6 +422,8 @@ class DeleteSessionView(UserPassesTestMixin, DeleteView):
         return super().delete(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
+        """Returns the context data for rendering the template."""
+
         context = super().get_context_data(**kwargs)
         return context
 
@@ -370,10 +436,14 @@ class SessionTodayListView(ListView):
     allow_empty = True
 
     def get_queryset(self):
+        """ Returns the queryset of sessions taking place on the current day and sorted
+        according to the 'sort' query parameter, if provided."""
+
         today = timezone.now().date()
         queryset = super().get_queryset()
         queryset = queryset.filter(start_date__lte=today, end_date__gte=today)
         sort = self.request.GET.get('sort')
+
         if sort == 'price':
             queryset = queryset.order_by('price')
         elif sort == '-price':
@@ -393,10 +463,14 @@ class SessionTomorrowListView(ListView):
     allow_empty = True
 
     def get_queryset(self):
+        """ Returns the queryset of sessions taking place on the next day and sorted
+        according to the 'sort' query parameter, if provided."""
+
         tomorrow = timezone.now().date() + timezone.timedelta(days=1)
         queryset = super().get_queryset()
         queryset = queryset.filter(start_date__lte=tomorrow, end_date__gte=tomorrow)
         sort = self.request.GET.get('sort')
+
         if sort == 'price':
             queryset = queryset.order_by('price')
         elif sort == '-price':

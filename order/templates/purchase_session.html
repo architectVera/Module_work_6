@@ -7,87 +7,93 @@
 
 <!--Session-->
 
-    <div class="container">
-        {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                    <li style="color: red ">{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+<div class="container">
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li style="color: red ">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 
-        {% if form.errors %}
+    {% if form.errors %}
     <div class="alert alert-danger">
         {% for field, errors in form.errors.items %}
-            {% for error in errors %}
-                <br>{{ error }}<br>
-            {% endfor %}
+        {% for error in errors %}
+        <br>{{ error }}<br>
+        {% endfor %}
         {% endfor %}
     </div>
-{% endif %}
+    {% endif %}
 
-<section class="col-md-9 mb-2" role="main">
-          <strong class="fw-light">Film name:</strong>
-          <h1 class="h1">{{ session.movie.title }}</h1>
-      <div class="row position-relative">
-        <article class="col w-100">
-          <div class="mb-3">
-              <strong class="fw-light">Hall name:  <b>{{ session.hall.name}}</b></strong>
-                                        <small>
-                            <i class="bi bi-person mx-1"></i><a href="" class="fw-bolder link-secondary"></a>
-                            <i class="bi bi-calendar mx-1"></i><span>Show date from {{ session.start_date }} till {{ session.end_date }}</span>
-                        </small>
-          </div>
-            <p>{{ session.movie.description|linebreaks }}</p>
-          <p class="card-text">Movie start time: {{ session.start_time }}</p>
-          <p class="card-text">Movie end time: {{ session.end_time }}</p>
-          <p class="card-text">Ticket price: <b> {{ session.price }} UA</b></p>
-
-    {% if user.is_superuser %}
-    <div>
-        <a href="{% url 'session-update' pk=session.pk %}" class="w-100 btn btn-primary" role="button">Update</a>
-    </div>
-    <p></p>
-    <div>
-     <a href="{% url 'session-delete' pk=session.pk  %}" class="w-100 btn btn-primary" role="button">Delete</a>
-    </div>
-    {% elif user.is_authenticated %}
-
-        <form method="POST" action="">
-             {% csrf_token %}
-                       <label for="showdata">Chose the date:</label>
-                            <input type="date"
-                                   id="showdata"
-                                   name="showdata"
-                                   min="{{ session.start_date }}"
-                                   max="{{ session.end_date }}"
-                                   value="{{ session|date:'Y-m-d' }}"
-                                   required>
-                            <p></p>
-           <label for="quantity">Quantity:</label>
-                            <input type="number"
-                                   name="quantity"
-                                   min="1"
-                                   max="{{ session.hall.seats }}"
-                                   value="1"
-                                   required>
-                            <p></p>
-                            <button class="w-100 btn btn-lg btn-primary" type="submit">Buy tickets</button>
-        </form>
-            <p></p>
-             <p class="card-text">The total number of seats in the hall : {{ session.hall.seats }} tickets </p>
-{% for date, free_seats in free_seats_by_day %}
-    <p>{{ date }} - {{ free_seats }} tickets available</p>
-{% endfor %}
-      <p>All {{ session.hall.seats }} tickets are available for other dates<p>
-
-      {% else %}
-            <p>
-                <b>Please register or login to start shopping</b>
-            </p>
-      {% endif %}
+    <section class="col-md-9 mb-2" role="main">
+        <article class="col" style="width: 140px">
+            <div class="card shadow">
+                <img src="{{ session.movie.image.url }}" alt="{{ session.movie.title }}" class="card-img-top">
+            </div>
         </article>
-      </div>
-</section>
+        <strong class="fw-light">Film name:</strong>
+        <h1 class="h1">{{ session.movie.title }}</h1>
+        <div class="row position-relative">
+            <article class="col w-100">
+                <div class="mb-3">
+                    <strong class="fw-light">Hall name: <b>{{ session.hall.name}}</b></strong>
+                    <small>
+                        <i class="bi bi-person mx-1"></i><a href="" class="fw-bolder link-secondary"></a>
+                        <i class="bi bi-calendar mx-1"></i><span>Show date from {{ session.start_date }} till {{ session.end_date }}</span>
+                    </small>
+                </div>
+                <p>{{ session.movie.description|linebreaks }}</p>
+                <p class="card-text">Movie start time: {{ session.start_time }}</p>
+                <p class="card-text">Movie end time: {{ session.end_time }}</p>
+                <p class="card-text">Ticket price: <b> {{ session.price }} UA</b></p>
+
+                {% if user.is_superuser %}
+                <div>
+                    <a href="{% url 'session-update' pk=session.pk %}" class="w-100 btn btn-primary" role="button">Update</a>
+                </div>
+                <p></p>
+                <div>
+                    <a href="{% url 'session-delete' pk=session.pk  %}" class="w-100 btn btn-primary" role="button">Delete</a>
+                </div>
+                {% elif user.is_authenticated %}
+
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <label for="showdata">Chose the date:</label>
+                    <input type="date"
+                           id="showdata"
+                           name="showdata"
+                           min="{{ session.start_date }}"
+                           max="{{ session.end_date }}"
+                           value="{{ session|date:'Y-m-d' }}"
+                           required>
+                    <p></p>
+                    <label for="quantity">Quantity:</label>
+                    <input type="number"
+                           name="quantity"
+                           min="1"
+                           max="{{ session.hall.seats }}"
+                           value="1"
+                           required>
+                    <p></p>
+                    <button class="w-100 btn btn-lg btn-primary" type="submit">Buy tickets</button>
+                </form>
+                <p></p>
+                <p class="card-text">The total number of seats in the hall : {{ session.hall.seats }} tickets </p>
+                {% for date, free_seats in free_seats_by_day %}
+                <p>{{ date }} - {{ free_seats }} tickets available</p>
+                {% endfor %}
+                <p>All {{ session.hall.seats }} tickets are available for other dates
+                <p>
+
+                    {% else %}
+                <p>
+                    <b>Please register or login to start shopping</b>
+                </p>
+                {% endif %}
+            </article>
+        </div>
+    </section>
 </div>>
 {% endblock %}

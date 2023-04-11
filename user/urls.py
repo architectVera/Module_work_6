@@ -1,7 +1,6 @@
-from django.urls import path
+""" URLS for the user app  """
 
 from django.urls import path
-from django.urls import reverse_lazy
 from user.views import UserRegisterView, UserLoginView, UserLogoutView
 
 urlpatterns = [
